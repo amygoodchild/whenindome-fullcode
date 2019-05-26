@@ -91,6 +91,8 @@ float[][] hueDifference;
 
 PImage depth;
 
+float centralBrightness;
+
 float[] depths;  // Depth feed in numbers
 float[] originalDepths;  // Background readings to compare to
 
@@ -307,6 +309,60 @@ void draw() {
  if (runTriangles){
      runTriangles(); 
   }
+  
+  // TIMER
+  println(frameCount);
+  
+  if(frameCount%(3600*1)==0){
+    runClusters = true;
+    runLines = false;
+    runCircles = false;
+    runWalkers = false;
+    runSegments = false;
+    runTriangles = false;
+  }
+  if(frameCount%(3600*2)==0){
+    runClusters = false;
+    runLines = true;
+    runCircles = false;
+    runWalkers = false;
+    runSegments = false;
+    runTriangles = false;
+  }
+  if(frameCount%(3600*3)==0){
+    runClusters = false;
+    runLines = false;
+    runCircles = true;
+    runWalkers = false;
+    runSegments = false;
+    runTriangles = false;
+  }
+  if(frameCount%(3600*4)==0){
+    runClusters = false;
+    runLines = false;
+    runCircles = false;
+    runWalkers = true;
+    runSegments = false;
+    runTriangles = false;
+  }
+  if(frameCount%(3600*5)==0){
+    runClusters = false;
+    runLines = false;
+    runCircles = false;
+    runWalkers = false;
+    runSegments = true;
+    runTriangles = false;
+  }
+  if(frameCount%(3600*6)==0){
+    runClusters = false;
+    runLines = false;
+    runCircles = false;
+    runWalkers = false;
+    runSegments = false;
+    runTriangles = true;
+  }
+  
+  
  
   
   fill(100,50,100);
@@ -341,11 +397,14 @@ void draw() {
 }
 
 void runTriangles(){
-  float theOpacity = int( map(action, 0, 12000, 250, 180));
-
+  centralBrightness = int( lerp(centralBrightness, map(action, 0,1000, 280, 210),0.1));
+ 
+  if (centralBrightness<210){centralBrightness = 210;}
+  
+   action = int(lerp(action, 0, 0.8)); // reset the action amount
 
   for (int i=0; i<triangles.length; i++){
-    triangles[i].update(theOpacity);
+    triangles[i].update(centralBrightness);
     triangles[i].display();
   }
 }
@@ -356,10 +415,14 @@ void runWalkers(){
     hueCentral = 0;
   }
   
-  float theOpacity = int( map(action, 0, 12000, 250, 180));
-
+  centralBrightness = int( lerp(centralBrightness, map(action, 0,1000, 280, 210),0.1));
+ 
+  if (centralBrightness<210){centralBrightness = 210;}
+  
+   action = int(lerp(action, 0, 0.8)); // reset the action amount
+   
   for (int i=0; i< walkers.length; i++){
-    walkers[i].move(theOpacity);
+    walkers[i].move(centralBrightness);
     walkers[i].display();
   }  
 }
@@ -369,11 +432,14 @@ void runSegments(){
   if (hueCentral>360){
     hueCentral = 0;
   }
+   centralBrightness = int( lerp(centralBrightness, map(action, 0,1000, 280, 210),0.1));
+ 
+  if (centralBrightness<210){centralBrightness = 210;}
   
-  float theOpacity = int( map(action, 0, 12000, 250, 180));
-
+   action = int(lerp(action, 0, 0.8)); // reset the action amount
+   
   for (int i=0; i< segments.length; i++){
-    segments[i].move(theOpacity);
+    segments[i].move(centralBrightness);
     segments[i].display();
   }  
 }
@@ -384,10 +450,14 @@ void runLines(){
     hueCentral = 0;
   }
   
-  float theOpacity = int( map(action, 0, 12000, 40, 0));
-
+  centralBrightness = int( lerp(centralBrightness, map(action, 0,1000, 280, 210),0.1));
+ 
+  if (centralBrightness<210){centralBrightness = 210;}
+  
+  action = int(lerp(action, 0, 0.8)); // reset the action amount
+  
   for (int i=0; i< lines.length; i++){
-    lines[i].move(theOpacity);
+    lines[i].move(centralBrightness);
     lines[i].display();
   }  
 }
@@ -397,14 +467,16 @@ void runCircles(){
   if (hueCentral>360){
     hueCentral = 0;
   }
-  float theBrightness = int( map(action, 0, 12000, 200, 0));
-
+  centralBrightness = int( lerp(centralBrightness, map(action, 0,1000, 280, 210),0.1));
+ 
+  if (centralBrightness<210){centralBrightness = 210;}
+  
+   action = int(lerp(action, 0, 0.8)); // reset the action amount
   for (int i=0; i< circles.length; i++){
-    circles[i].move(theBrightness);
+    circles[i].move(centralBrightness);
     circles[i].display();
-    //println("i: " + i + " rad: " + circles[i].radius + " hue: " + circles[i].hue);
-  }
-   fill(hueCentral, 180,theBrightness,360);
+    }
+   fill(hueCentral, 180,centralBrightness,360);
    noStroke();
    ellipse(width/2-90, height/2, 150, 150);
 }

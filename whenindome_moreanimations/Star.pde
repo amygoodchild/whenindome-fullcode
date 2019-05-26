@@ -18,7 +18,7 @@ class Star{
   void display(){
     float theHue = hue+clusterhuechanger;
     fill(theHue%360,180,360,opacity);
-    rect(x, y, 40,40);
+    rect(x, y, 60,60);
   } 
   
   void move(float x_, float y_, float hue_){

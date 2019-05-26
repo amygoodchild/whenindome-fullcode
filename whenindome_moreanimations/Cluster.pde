@@ -31,8 +31,8 @@ class Cluster{
   
   
   void move(){
-    x = random(0,1235);
-    y = random(0,960);   
+    x = random(0,width);
+    y = random(0,height);   
     
     for (int i=0; i<stars.length; i++){
       stars[i].move(x+random(minStarDistance,maxStarDistance), y+random(minStarDistance,maxStarDistance), hue+random(minStarDistance,maxStarDistance));

@@ -34,7 +34,7 @@ class Walker{
     t+= 0.005;
     ht +=0.005;
     brightness = theBrightness;
-    println(hue);   
+      
   }
   
   
