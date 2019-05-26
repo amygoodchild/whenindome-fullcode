@@ -13,7 +13,7 @@ class Circle{
   
   
   void display(){
-    stroke(hue,180,brightness,360);
+    stroke(hue,180,brightness,50);
     strokeWeight((width+500)/numberOfCircles);
     noFill();
     //ellipseMode(CENTER);
@@ -29,7 +29,6 @@ class Circle{
     
     if (radius > width+500){
       newCircle();
-      println("new");
     }
 
     

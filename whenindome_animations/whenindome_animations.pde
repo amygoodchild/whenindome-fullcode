@@ -81,6 +81,8 @@ float[][] hueDifference;
 
 PImage depth;
 
+float centralBrightness;
+
 float[] depths;  // Depth feed in numbers
 float[] originalDepths;  // Background readings to compare to
 
@@ -92,8 +94,7 @@ NetAddress myRemoteLocation;
 
 boolean runClusters = false;
 boolean runLines = false;
-boolean runCircles = false;
-boolean runFire = true;
+boolean runCircles = true;
 
 void setup() {
   
@@ -240,7 +241,7 @@ void setup() {
   
   // Connect to the local instance of fadecandy server. 
   opc = new OPC(this, "127.0.0.1", 7890);
-  opc.showLocations(true);
+  opc.showLocations(false);
  
   // Mapping the LEDs 
   mapLeds();
@@ -275,6 +276,15 @@ void draw() {
   }
   if (runCircles){
      runCircles(); 
+  }
+  
+  if(frameCount%2000==0){
+    runCircles = false;
+    runClusters = true;
+  }
+  if(frameCount%2400==0){
+    runCircles = true;
+    runClusters = false;
   }
   
 
@@ -333,23 +343,27 @@ void runCircles(){
   if (hueCentral>360){
     hueCentral = 0;
   }
-  float theBrightness = int( map(action, 0, 12000, 200, 0));
-
+  centralBrightness = int( lerp(centralBrightness, map(action, 0,1000, 280, 210),0.1));
+  //print("action: "+ action);
+  if (centralBrightness<100){centralBrightness = 100;}
+  // println(" clusters: "+ numberOfClusterstoDisplay);
+ // println("centralBrightness: " + centralBrightness);
+   action = int(lerp(action, 0, 0.8)); // reset the action amount
   for (int i=0; i< circles.length; i++){
-    circles[i].move(theBrightness);
+    circles[i].move(centralBrightness);
     circles[i].display();
     //println("i: " + i + " rad: " + circles[i].radius + " hue: " + circles[i].hue);
   }
-   fill(hueCentral, 180,theBrightness,360);
+   fill(hueCentral, 180,centralBrightness,360);
    noStroke();
    ellipse(width/2-90, height/2, 150, 150);
 }
 
 void clusterAnimation(){
    numberOfClusterstoDisplay = int( map(action, 0, 12000, numberOfClusters, 0)); // map the amount of stars to the action, inversely
-   print("action: "+ action);
-   println(" clusters: "+ numberOfClusterstoDisplay);
-
+   //print("action: "+ action);
+  // println(" clusters: "+ numberOfClusterstoDisplay);
+  
    action = int(lerp(action, 0, 0.8)); // reset the action amount
    
    
@@ -400,7 +414,7 @@ void drawDepthDifference(){
           rotate(3.14);
           translate(900, -260);
           scale(-1,1);
-          rect(x*2,y*2,8,8);
+          rect(x*2.2,y*2.4,8,8);
           popMatrix();
         }
       }
